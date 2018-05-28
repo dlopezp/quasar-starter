@@ -1,0 +1,45 @@
+{
+  "name": "playmo-quasar-starter",
+  "version": "1.0.0",
+  "description": "A Playmo app",
+  "productName": "Playmo App",
+  "cordovaId": "org.cordova.quasar.app",
+  "author": "Daniel López Pérez <dlopezp.dev@gmail.com>",
+  "private": true,
+  "scripts": {
+    "lint": "eslint --ext .js,.vue src",
+    "test": "echo \"No test specified\" && exit 0",
+    "create-bucket": "export $(cat .env | xargs) && aws s3 mb s3://$AWS_S3_BUCKET --profile $AWS_PROFILE",
+    "create-distribution": "aws cloudfront create-distribution --origin-domain-name $AWS_S3_BUCKET.s3.amazonaws.com --default-root-object index.html --profile $AWS_PROFILE --query 'Distribution.Id'",
+    "upload": "export $(cat .env | xargs) && quasar build && aws s3 sync dist/spa-mat s3://$AWS_S3_BUCKET --delete --acl public-read --profile $AWS_PROFILE",
+    "deploy": "export $(cat .env | xargs) && aws cloudfront create-invalidation --distribution-id $AWS_CLOUDFRONT_DISTRIBUTION --paths /\\* --profile $AWS_PROFILE",
+    "release": "quasar build && npm run upload && npm run deploy"
+  },
+  "dependencies": {
+    "axios": "^0.18.0",
+    "vue-i18n": "^7.3.3",
+    "vuelidate": "^0.7.4"
+  },
+  "devDependencies": {
+    "babel-eslint": "^8.2.1",
+    "eslint": "^4.18.2",
+    "eslint-config-standard": "^11.0.0",
+    "eslint-friendly-formatter": "^4.0.1",
+    "eslint-loader": "^2.0.0",
+    "eslint-plugin-import": "^2.9.0",
+    "eslint-plugin-node": "^6.0.1",
+    "eslint-plugin-promise": "^3.7.0",
+    "eslint-plugin-standard": "^3.0.1",
+    "eslint-plugin-vue": "^4.3.0",
+    "quasar-cli": "^0.16.0"
+  },
+  "engines": {
+    "node": ">= 8.9.0",
+    "npm": ">= 5.6.0"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 10"
+  ]
+}
